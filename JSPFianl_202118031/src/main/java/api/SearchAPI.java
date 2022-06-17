@@ -26,13 +26,16 @@ public class SearchAPI extends HttpServlet {
         // 1. 인증 정보 설정
         String clientId = "FPOVjDGzOXcVR3RbWc1K";
         String clientSecret = "D8Pa6Lqb3H";
-
+       
         // 2. 검색 조건 설정
         int startNum = 0;    // 검색 시작 위치
         String text = null;  // 검색어
+        String sortvalue;
         try {
              startNum = Integer.parseInt(req.getParameter("startNum"));
              String searchText = req.getParameter("keyword");
+             sortvalue = req.getParameter("sortvalue");
+             System.out.println(sortvalue);
              text = URLEncoder.encode(searchText, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("검색어 인코딩 실패", e);
@@ -40,7 +43,7 @@ public class SearchAPI extends HttpServlet {
 
         // 3. API URL 조합
         String apiURL = "https://openapi.naver.com/v1/search/blog?query=" + text
-                        + "&display=10&start=" + startNum;  // json 결과
+                        + "&display=10&start=" + startNum + "&sort=" + sortvalue;  // json 결과
         //String apiURL = "https://openapi.naver.com/v1/search/blog.xml?query=" + text;  // xml 결과
 
         // 4. API 호출
@@ -48,9 +51,7 @@ public class SearchAPI extends HttpServlet {
         requestHeaders.put("X-Naver-Client-Id", clientId);
         requestHeaders.put("X-Naver-Client-Secret", clientSecret);
         String responseBody = get(apiURL, requestHeaders);
-
-        // 5. 결과 출력
-        System.out.println(responseBody);  // 콘솔에 출력
+        System.out.println(responseBody);
 
         resp.setContentType("text/html; charset=utf-8");
         resp.getWriter().write(responseBody);  // 서블릿에서 즉시 출력
@@ -67,6 +68,7 @@ public class SearchAPI extends HttpServlet {
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 호출
                 return readBody(con.getInputStream());
+                
             } else { // 에러 발생
                 return readBody(con.getErrorStream());
             }
