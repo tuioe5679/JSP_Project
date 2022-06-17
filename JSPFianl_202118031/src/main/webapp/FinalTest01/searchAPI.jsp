@@ -61,6 +61,7 @@ function errFunc(e) {
                 <option value="11">2페이지</option>
                 <option value="21">3페이지</option>
                 <option value="31">4페이지</option>  
+                <option value="41">5페이지</option>  
             </select>
             <select id="sortvalue">
              	<option value="sim">기본</option>
